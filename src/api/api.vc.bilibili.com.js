@@ -2,7 +2,7 @@ const got = require('got')
 
 // Who the hell invented that 4200 must have at least a year of brain tumor.
 const DYNO_CODE = { 1: 'REPOST', 2: 'PIC_POST', 4: 'TEXT_POST', 8: 'VIDEO', 4200: 'LIVEROOM' }
-const COPY_ATTR = ['dynamic_id', 'view', 'repost', 'comment', 'like']
+const COPY_ATTR = ['dynamic_id', 'dynamic_id_str', 'view', 'repost', 'comment', 'like']
 
 module.exports = {
   dynamicsRaw: {
@@ -35,7 +35,11 @@ module.exports = {
         tempObject.type = DYNO_CODE[x.desc.type] || undefined
         COPY_ATTR.forEach(k => tempObject[k] = x.desc[k])
         if (tempObject.type === 'REPOST') {
-          if (tempObject.origin) tempObject.origin = JSON.parse(tempObject.origin)
+          if (tempObject.origin) {
+            tempObject.origin = JSON.parse(tempObject.origin)
+            tempObject.origin['type'] = DYNO_CODE[x.desc.origin.type] || undefined
+            COPY_ATTR.forEach(k => tempObject.origin[k] = x.desc.origin[k])
+          }
           if (tempObject.origin_extend_json) tempObject.origin_extend_json = JSON.parse(tempObject.origin_extend_json)
         }
         cleaned.push(tempObject)
