@@ -8,11 +8,10 @@ module.exports = {
   dynamicsRaw: {
     demand: ['mid', 'dynamicOffset'],
     type: 'transparent',
-    get: ({ mid, dynamicOffset }) => {
-      const url = `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/space_history?host_uid=${mid}&offset_dynamic_id=${dynamicOffset}&need_top=0&platform=web`
-      return got(url).then(
-        (result) => { // Resolve
-          const jsonRaw = JSON.parse(result.body)
+    get: ({ mid, dynamicOffset }, { got }) => {
+      const urlInfo = `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/space_history?host_uid=${mid}&offset_dynamic_id=${dynamicOffset}&need_top=0&platform=web`
+      return got({url: urlInfo}).then(
+        (jsonRaw) => { // Resolve
           const cards = jsonRaw.data.cards
           cards.has_more = jsonRaw.data.has_more
           cards.next_offset = jsonRaw.data.next_offset
